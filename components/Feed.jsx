@@ -17,21 +17,46 @@ const PromptCardList = ({data, handleTagClick}) => {
   )
 }
 const Feed = () => {
+  
+  const [allPosts, setAllPosts] = useState([])
+
+  // Search states
   const [searchText, setSearchText] = useState("");
-  const [posts, setPosts] = useState([])
+  const [searchTimeout, setSearchTimeout] = useState(null);
+  const [searchedResults, setSearchedResults] = useState([]);
 
   const handleSearchChange = (e) => {
-    
+    setSearchText(e.target.value);
+    if (searchTimeout) clearTimeout(searchTimeout);
+    setSearchTimeout(
+      setTimeout(() => {
+        const results = allPosts.filter((post) =>
+          post.prompt.toLowerCase().includes(searchText.toLowerCase())
+        );
+        setSearchedResults(results);
+      }
+      , 500)
+    );
   }
+
+  const handleTagClick = (tagName) => {
+    setSearchText(tagName);
+    const results = allPosts.filter((post) =>
+      post.tag.toLowerCase().includes(tagName.toLowerCase())
+    );
+    setSearchedResults(results);
+  }
+
+  const fetchPosts = async () =>{
+    const response = await fetch('/api/prompt');
+    const data = await response.json();
+    setAllPosts(data);
+  }
+
   useEffect(()=>{
-    const fetchPosts = async () =>{
-      const response = await fetch('/api/prompt');
-      const data = await response.json();
-      setPosts(data);
-      
-    }
     fetchPosts();
   },[])
+
   return (
     <section className="feed">
       <form className="relative w-full flex-center">
@@ -45,10 +70,15 @@ const Feed = () => {
         />
       </form>
 
-      <PromptCardList
-        data={posts}
-        handleTagClick={()=>{}}
-      />
+      {/* All Prompts */}
+      {searchText ? (
+        <PromptCardList
+          data={searchedResults}
+          handleTagClick={handleTagClick}
+        />
+      ) : (
+        <PromptCardList data={allPosts} handleTagClick={handleTagClick} />
+      )}
     </section>
   )
 }

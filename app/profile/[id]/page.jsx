@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-
 import { useSearchParams } from "next/navigation";
 
 import Profile from "@components/Profile";
@@ -12,9 +11,11 @@ const UserProfile = ({ params }) => {
   const [userPosts, setUserPosts] = useState([]);
 
   useEffect(() => {
+    
     const getUserPosts = async () => {
-      const response = await fetch(`/api/users/${params?._id}/posts`);
+      const response = await fetch(`/api/users/${params?.id}/posts`);
       const data = await response.json();
+      
       setUserPosts(data);
     };
     if (params?.id) getUserPosts();

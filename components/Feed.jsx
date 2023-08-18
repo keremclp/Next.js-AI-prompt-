@@ -67,7 +67,7 @@ const Feed = () => {
           onChange={handleSearchChange}
           required
           className="search_input peer"
-        />
+        />  
       </form>
 
       {/* All Prompts */}

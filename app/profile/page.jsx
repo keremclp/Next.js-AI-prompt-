@@ -40,8 +40,6 @@ const MyProfile = () => {
         console.log(error)
       }
     }
-
-
   };
   return (
     <Profile
